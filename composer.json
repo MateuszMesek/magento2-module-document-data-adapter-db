@@ -3,7 +3,8 @@
     "description": "N/A",
     "type": "magento2-module",
     "require": {
-        "magento/framework": "*"
+        "magento/framework": "*",
+        "mateuszmesek-magento2/module-document-data-indexer": "*"
     },
     "replace": {
         "mateuszmesek-magento2/module-document-data-indexer-db": "*"
