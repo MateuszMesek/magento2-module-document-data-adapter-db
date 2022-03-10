@@ -1,0 +1,22 @@
+{
+    "name": "mateuszmesek-magento2/module-document-data-indexer-db",
+    "description": "N/A",
+    "type": "magento2-module",
+    "require": {
+        "magento/framework": "*"
+    },
+    "replace": {
+        "mateuszmesek-magento2/module-document-data-indexer-db": "*"
+    },
+    "license": [
+        "MIT"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MateuszMesek\\DocumentDataIndexerDB\\": "src"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "document_data_index_pattern": {
+        "column": {
+            "id":  true,
+            "document_id": true,
+            "node_path": true,
+            "node_value": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "DOCUMENT_INDEX_UNIQUE": true
+        }
+    }
+}

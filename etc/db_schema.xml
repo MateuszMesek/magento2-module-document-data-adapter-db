@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="document_data_index_pattern" engine="innodb" comment="Document Data Index Pattern">
+        <column xsi:type="bigint" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="varchar" name="document_id" length="255" nullable="false" comment="Document ID"/>
+        <column xsi:type="varchar" name="node_path" length="255"  nullable="false" comment="Node Path"/>
+        <column xsi:type="json" name="node_value" nullable="false" comment="Node Value"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="DOCUMENT_INDEX_UNIQUE">
+            <column name="document_id"/>
+            <column name="node_path"/>
+        </constraint>
+    </table>
+</schema>
