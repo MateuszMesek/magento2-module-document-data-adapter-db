@@ -46,9 +46,9 @@ class SaveHandler implements SaveHandlerInterface
 
     public function saveIndex($dimensions, Traversable $documents): void
     {
-        $document = $this->documentNameResolver->resolve($dimensions);
+        $documentName = $this->documentNameResolver->resolve($dimensions);
 
-        $documentNodes = $this->getDocumentNodes->execute($document);
+        $documentNodes = $this->getDocumentNodes->execute($documentName);
 
         $paths = [];
 
