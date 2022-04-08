@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataIndexerDB\Setup;
+namespace MateuszMesek\DocumentDataAdapterDB\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use MateuszMesek\DocumentDataIndexerApi\Command\GetIndexNamesInterface;
-use MateuszMesek\DocumentDataIndexerDB\Model\ResourceModel\Index as Resource;
+use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
 
 class Recurring implements InstallSchemaInterface
 {

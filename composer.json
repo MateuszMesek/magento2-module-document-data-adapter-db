@@ -1,10 +1,12 @@
 {
-    "name": "mateuszmesek-magento2/module-document-data-indexer-db",
+    "name": "mateuszmesek-magento2/module-document-data-adapter-db",
     "description": "N/A",
     "type": "magento2-module",
     "require": {
         "magento/framework": "*",
-        "mateuszmesek-magento2/module-document-data-indexer": "*"
+        "mateuszmesek-magento2/module-document-data-api": "*",
+        "mateuszmesek-magento2/module-document-data-index": "*",
+        "mateuszmesek-magento2/module-document-data-index-api": "*"
     },
     "license": [
         "MIT"
@@ -14,7 +16,10 @@
             "registration.php"
         ],
         "psr-4": {
-            "MateuszMesek\\DocumentDataIndexerDB\\": "src"
+            "MateuszMesek\\DocumentDataAdapterDB\\": "src"
         }
+    },
+    "replace": {
+        "mateuszmesek-magento2/module-document-data-adapter-db": "*"
     }
 }

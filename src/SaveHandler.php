@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataIndexerDB;
+namespace MateuszMesek\DocumentDataAdapterDB;
 
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Stdlib\ArrayManager;
 use MateuszMesek\DocumentDataApi\Command\GetDocumentNodesInterface;
-use MateuszMesek\DocumentDataIndexerApi\DimensionResolverInterface;
-use MateuszMesek\DocumentDataIndexerApi\IndexNameResolverInterface;
-use MateuszMesek\DocumentDataIndexerApi\SaveHandlerInterface;
-use MateuszMesek\DocumentDataIndexerDB\Model\ResourceModel\Index as Resource;
+use MateuszMesek\DocumentDataIndexApi\DimensionResolverInterface;
+use MateuszMesek\DocumentDataIndexApi\IndexNameResolverInterface;
+use MateuszMesek\DocumentDataIndexApi\SaveHandlerInterface;
+use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
 use Traversable;
 
 class SaveHandler implements SaveHandlerInterface
@@ -58,7 +58,7 @@ class SaveHandler implements SaveHandlerInterface
 
         $connection = $this->resource->getConnection();
 
-        foreach ($documents as $document) {
+        foreach ($documents as $documentId => $document) {
             $data = [];
 
             foreach ($paths as $path) {
@@ -67,7 +67,7 @@ class SaveHandler implements SaveHandlerInterface
                 }
 
                 $data[] = [
-                    'document_id' => $document['id'],
+                    'document_id' => $documentId,
                     'node_path' => $path,
                     'node_value' => $this->serializer->serialize(
                         $this->arrayManager->get($path, $document)
@@ -80,7 +80,7 @@ class SaveHandler implements SaveHandlerInterface
             $connection->delete(
                 $this->getTableName($dimensions),
                 [
-                    'document_id = ?' => $document['id'],
+                    'document_id = ?' => $documentId,
                     'node_path NOT IN (?)' => $paths
                 ]
             );

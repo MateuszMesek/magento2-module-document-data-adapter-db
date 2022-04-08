@@ -1,9 +1,14 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="MateuszMesek\DocumentDataIndexerApi\SaveHandlerInterface" type="MateuszMesek\DocumentDataIndexerDB\SaveHandler"/>
-    <type name="MateuszMesek\DocumentDataIndexerDB\SaveHandler">
+    <type name="MateuszMesek\DocumentDataAdapterDB\DataResolver">
         <arguments>
-            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexer\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\NodePathsResolver</argument>
+        </arguments>
+    </type>
+    <type name="MateuszMesek\DocumentDataAdapterDB\SaveHandler">
+        <arguments>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\DocumentNameResolver</argument>
         </arguments>
     </type>
 </config>

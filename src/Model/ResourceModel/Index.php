@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataIndexerDB\Model\ResourceModel;
+namespace MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel;
 
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 

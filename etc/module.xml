@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="MateuszMesek_DocumentDataIndexerDB">
+    <module name="MateuszMesek_DocumentDataAdapterDB">
         <sequence>
-            <module name="MateuszMesek_DocumentDataIndexer"/>
+            <module name="MateuszMesek_DocumentDataApi"/>
+            <module name="MateuszMesek_DocumentDataIndex"/>
+            <module name="MateuszMesek_DocumentDataIndexApi"/>
         </sequence>
     </module>
 </config>
