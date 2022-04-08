@@ -18,8 +18,5 @@
         "psr-4": {
             "MateuszMesek\\DocumentDataAdapterDB\\": "src"
         }
-    },
-    "replace": {
-        "mateuszmesek-magento2/module-document-data-adapter-db": "*"
     }
 }
