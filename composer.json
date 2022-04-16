@@ -5,8 +5,8 @@
     "require": {
         "magento/framework": "*",
         "mateuszmesek-magento2/module-document-data-api": "*",
-        "mateuszmesek-magento2/module-document-data-index": "*",
-        "mateuszmesek-magento2/module-document-data-index-api": "*"
+        "mateuszmesek-magento2/module-document-data-index-indexer": "*",
+        "mateuszmesek-magento2/module-document-data-index-indexer-api": "*"
     },
     "license": [
         "MIT"
