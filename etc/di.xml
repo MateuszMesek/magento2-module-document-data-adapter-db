@@ -2,13 +2,13 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="MateuszMesek\DocumentDataAdapterDB\DataResolver">
         <arguments>
-            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\DocumentNameResolver</argument>
-            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\NodePathsResolver</argument>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\NodePathsResolver</argument>
         </arguments>
     </type>
     <type name="MateuszMesek\DocumentDataAdapterDB\SaveHandler">
         <arguments>
-            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndex\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\DocumentNameResolver</argument>
         </arguments>
     </type>
 </config>

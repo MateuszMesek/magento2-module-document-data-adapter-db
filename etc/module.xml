@@ -4,7 +4,7 @@
         <sequence>
             <module name="MateuszMesek_DocumentDataApi"/>
             <module name="MateuszMesek_DocumentDataIndex"/>
-            <module name="MateuszMesek_DocumentDataIndexApi"/>
+            <module name="MateuszMesek_DocumentDataIndexIndexerApi"/>
         </sequence>
     </module>
 </config>

@@ -5,9 +5,9 @@ namespace MateuszMesek\DocumentDataAdapterDB;
 use Generator;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Stdlib\ArrayManager;
-use MateuszMesek\DocumentDataIndexApi\DataResolverInterface;
-use MateuszMesek\DocumentDataIndexApi\DimensionResolverInterface;
-use MateuszMesek\DocumentDataIndexApi\IndexNameResolverInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\DataResolverInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\DimensionResolverInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
 use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
 use Traversable;
 
