@@ -5,7 +5,7 @@ namespace MateuszMesek\DocumentDataAdapterDB\SubscriptionProvider;
 use InvalidArgumentException;
 use Magento\Framework\DB\Ddl\Trigger;
 use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
-use MateuszMesek\DocumentDataIndexIndexer\DimensionProvider\Factory as DimensionFactory;
+use MateuszMesek\DocumentDataIndexIndexer\Dimension\Factory as DimensionFactory;
 use MateuszMesek\DocumentDataIndexIndexer\DimensionProvider\WithDocumentNameProvider;
 use MateuszMesek\DocumentDataIndexIndexer\DimensionProviderFactory;
 use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
