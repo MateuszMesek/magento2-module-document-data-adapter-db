@@ -5,6 +5,8 @@ namespace MateuszMesek\DocumentDataAdapterDB\SubscriptionProvider;
 use InvalidArgumentException;
 use Magento\Framework\DB\Ddl\Trigger;
 use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
+use MateuszMesek\DocumentDataIndexIndexer\DimensionProvider\Factory as DimensionFactory;
+use MateuszMesek\DocumentDataIndexIndexer\DimensionProvider\WithDocumentNameProvider;
 use MateuszMesek\DocumentDataIndexIndexer\DimensionProviderFactory;
 use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
 use MateuszMesek\DocumentDataIndexMview\Data\SubscriptionFactory;
@@ -13,18 +15,21 @@ use Traversable;
 class Generator
 {
     private DimensionProviderFactory $dimensionProviderFactory;
+    private DimensionFactory $dimensionFactory;
     private IndexNameResolverInterface $indexNameResolver;
     private Resource $resource;
     private SubscriptionFactory $subscriptionFactory;
 
     public function __construct(
         DimensionProviderFactory   $dimensionProviderFactory,
+        DimensionFactory           $dimensionFactory,
         IndexNameResolverInterface $indexNameResolver,
         Resource                   $resource,
         SubscriptionFactory        $subscriptionFactory
     )
     {
         $this->dimensionProviderFactory = $dimensionProviderFactory;
+        $this->dimensionFactory = $dimensionFactory;
         $this->indexNameResolver = $indexNameResolver;
         $this->resource = $resource;
         $this->subscriptionFactory = $subscriptionFactory;
@@ -52,7 +57,7 @@ class Generator
             }
 
             foreach ($dimensions as $dimension) {
-                $indexName = $this->indexNameResolver->resolve($dimension);
+                $indexName = $this->getIndexName($documentName, $dimension);
 
                 $tableName = $this->resource->getTable($indexName);
 
@@ -69,6 +74,16 @@ class Generator
                 ]);
             }
         }
+    }
+
+    private function getIndexName(string $documentName, array $dimensions): string
+    {
+        $dimensions[WithDocumentNameProvider::DIMENSION_NAME] = $this->dimensionFactory->create(
+            WithDocumentNameProvider::DIMENSION_NAME,
+            $documentName
+        );
+
+        return $this->indexNameResolver->resolve($dimensions);
     }
 
     private function dimensionToSQL(array $dimensions): string
