@@ -15,6 +15,7 @@ class SaveHandler implements SaveHandlerInterface
 {
     private IndexNameResolverInterface $indexNameResolver;
     private DimensionResolverInterface $documentNameResolver;
+    private DimensionResolverInterface $nodePathsResolver;
     private GetDocumentNodesInterface $getDocumentNodes;
     private Resource $resource;
     private ArrayManager $arrayManager;
@@ -23,6 +24,7 @@ class SaveHandler implements SaveHandlerInterface
     public function __construct(
         IndexNameResolverInterface $indexNameResolver,
         DimensionResolverInterface $documentNameResolver,
+        DimensionResolverInterface $nodePathsResolver,
         GetDocumentNodesInterface  $getDocumentNodes,
         Resource                   $resource,
         ArrayManager               $arrayManager,
@@ -31,6 +33,7 @@ class SaveHandler implements SaveHandlerInterface
     {
         $this->indexNameResolver = $indexNameResolver;
         $this->documentNameResolver = $documentNameResolver;
+        $this->nodePathsResolver = $nodePathsResolver;
         $this->getDocumentNodes = $getDocumentNodes;
         $this->resource = $resource;
         $this->arrayManager = $arrayManager;
@@ -47,6 +50,7 @@ class SaveHandler implements SaveHandlerInterface
     public function saveIndex($dimensions, Traversable $documents): void
     {
         $documentName = $this->documentNameResolver->resolve($dimensions);
+        $nodePaths = $this->nodePathsResolver->resolve($dimensions);
 
         $documentNodes = $this->getDocumentNodes->execute($documentName);
 
@@ -62,7 +66,7 @@ class SaveHandler implements SaveHandlerInterface
             $data = [];
 
             foreach ($paths as $path) {
-                if (!$this->arrayManager->exists($path, $document)) {
+                if ($nodePaths && !in_array($path, $nodePaths, true)) {
                     continue;
                 }
 

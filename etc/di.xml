@@ -9,6 +9,7 @@
     <type name="MateuszMesek\DocumentDataAdapterDB\SaveHandler">
         <arguments>
             <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\NodePathsResolver</argument>
         </arguments>
     </type>
 </config>
