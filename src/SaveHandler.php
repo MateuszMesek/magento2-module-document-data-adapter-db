@@ -60,17 +60,20 @@ class SaveHandler implements SaveHandlerInterface
             $paths[] = $documentNode['path'];
         }
 
-        $connection = $this->resource->getConnection();
+        $documentIds = [];
+        $documentRows = [];
 
         foreach ($documents as $documentId => $document) {
-            $data = [];
+            $documentId = (string)$documentId;
+
+            $documentIds[] = $documentId;
 
             foreach ($paths as $path) {
                 if ($nodePaths && !in_array($path, $nodePaths, true)) {
                     continue;
                 }
 
-                $data[] = [
+                $documentRows[] = [
                     'document_id' => $documentId,
                     'node_path' => $path,
                     'node_value' => $this->serializer->serialize(
@@ -78,24 +81,21 @@ class SaveHandler implements SaveHandlerInterface
                     )
                 ];
             }
-
-            $connection->beginTransaction();
-
-            $connection->delete(
-                $this->getTableName($dimensions),
-                [
-                    'document_id = ?' => $documentId,
-                    'node_path NOT IN (?)' => $paths
-                ]
-            );
-            $connection->insertOnDuplicate(
-                $this->getTableName($dimensions),
-                $data,
-                ['node_value']
-            );
-
-            $connection->commit();
         }
+
+        $connection = $this->resource->getConnection();
+        $connection->delete(
+            $this->getTableName($dimensions),
+            [
+                'document_id IN (?)' => $documentIds,
+                'node_path NOT IN (?)' => $paths
+            ]
+        );
+        $connection->insertOnDuplicate(
+            $this->getTableName($dimensions),
+            $documentRows,
+            ['node_value']
+        );
     }
 
     public function deleteIndex($dimensions, Traversable $documents): void
