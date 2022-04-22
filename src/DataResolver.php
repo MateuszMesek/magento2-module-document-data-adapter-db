@@ -55,6 +55,10 @@ class DataResolver implements DataResolverInterface
 
             $documents = [];
 
+            foreach ($documentIds as $documentId) {
+                $documents[$documentId] = [];
+            }
+
             $query = $connection->query($select);
 
             while ($row = $query->fetch()) {
