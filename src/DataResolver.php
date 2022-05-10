@@ -4,7 +4,7 @@ namespace MateuszMesek\DocumentDataAdapterDB;
 
 use Generator;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\Stdlib\ArrayManager;
+use MateuszMesek\DocumentData\Data\DocumentDataFactory;
 use MateuszMesek\DocumentDataIndexIndexerApi\DataResolverInterface;
 use MateuszMesek\DocumentDataIndexIndexerApi\DimensionResolverInterface;
 use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
@@ -16,24 +16,24 @@ class DataResolver implements DataResolverInterface
     private IndexNameResolverInterface $indexNameResolver;
     private DimensionResolverInterface $nodePathsResolver;
     private Resource $resource;
+    private DocumentDataFactory $documentDataFactory;
     private SerializerInterface $serializer;
-    private ArrayManager $arrayManager;
     private int $batchSize;
 
     public function __construct(
         IndexNameResolverInterface $indexNameResolver,
         DimensionResolverInterface $nodePathsResolver,
         Resource                   $resource,
+        DocumentDataFactory        $documentDataFactory,
         SerializerInterface        $serializer,
-        ArrayManager               $arrayManager,
         int                        $batchSize = 100
     )
     {
         $this->indexNameResolver = $indexNameResolver;
         $this->nodePathsResolver = $nodePathsResolver;
         $this->resource = $resource;
+        $this->documentDataFactory = $documentDataFactory;
         $this->serializer = $serializer;
-        $this->arrayManager = $arrayManager;
         $this->batchSize = $batchSize;
     }
 
@@ -56,7 +56,7 @@ class DataResolver implements DataResolverInterface
             $documents = [];
 
             foreach ($documentIds as $documentId) {
-                $documents[$documentId] = [];
+                $documents[$documentId] = null;
             }
 
             $query = $connection->query($select);
@@ -64,9 +64,12 @@ class DataResolver implements DataResolverInterface
             while ($row = $query->fetch()) {
                 ['document_id' => $documentId, 'node_path' => $nodePath, 'node_value' => $nodeValue] = $row;
 
-                $documents[$documentId] = $this->arrayManager->set(
+                if (!isset($documents[$documentId])) {
+                    $documents[$documentId] = $this->documentDataFactory->create();
+                }
+
+                $documents[$documentId]->set(
                     $nodePath,
-                    $documents[$documentId] ?? [],
                     $this->serializer->unserialize($nodeValue)
                 );
             }

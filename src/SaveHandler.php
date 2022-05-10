@@ -3,7 +3,6 @@
 namespace MateuszMesek\DocumentDataAdapterDB;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\Stdlib\ArrayManager;
 use MateuszMesek\DocumentDataApi\Command\GetDocumentNodesInterface;
 use MateuszMesek\DocumentDataIndexIndexerApi\DimensionResolverInterface;
 use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
@@ -18,7 +17,6 @@ class SaveHandler implements SaveHandlerInterface
     private DimensionResolverInterface $nodePathsResolver;
     private GetDocumentNodesInterface $getDocumentNodes;
     private Resource $resource;
-    private ArrayManager $arrayManager;
     private SerializerInterface $serializer;
 
     public function __construct(
@@ -27,7 +25,6 @@ class SaveHandler implements SaveHandlerInterface
         DimensionResolverInterface $nodePathsResolver,
         GetDocumentNodesInterface  $getDocumentNodes,
         Resource                   $resource,
-        ArrayManager               $arrayManager,
         SerializerInterface        $serializer
     )
     {
@@ -36,7 +33,6 @@ class SaveHandler implements SaveHandlerInterface
         $this->nodePathsResolver = $nodePathsResolver;
         $this->getDocumentNodes = $getDocumentNodes;
         $this->resource = $resource;
-        $this->arrayManager = $arrayManager;
         $this->serializer = $serializer;
     }
 
@@ -64,6 +60,7 @@ class SaveHandler implements SaveHandlerInterface
         $documentRows = [];
 
         foreach ($documents as $documentId => $document) {
+            /** @var \MateuszMesek\DocumentDataApi\Data\DocumentDataInterface $document */
             $documentId = (string)$documentId;
 
             $documentIds[] = $documentId;
@@ -77,7 +74,7 @@ class SaveHandler implements SaveHandlerInterface
                     'document_id' => $documentId,
                     'node_path' => $path,
                     'node_value' => $this->serializer->serialize(
-                        $this->arrayManager->get($path, $document)
+                        $document->get($path)
                     )
                 ];
             }
@@ -102,8 +99,8 @@ class SaveHandler implements SaveHandlerInterface
     {
         $documentIds = [];
 
-        foreach ($documents as $document) {
-            $documentIds[] = $document['id'];
+        foreach ($documents as $documentId => $document) {
+            $documentIds[] = (string)$documentId;
         }
 
         $connection = $this->resource->getConnection();
