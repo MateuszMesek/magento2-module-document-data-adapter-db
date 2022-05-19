@@ -66,6 +66,7 @@ class DataResolver implements DataResolverInterface
 
                 if (!isset($documents[$documentId])) {
                     $documents[$documentId] = $this->documentDataFactory->create();
+                    $documents[$documentId]->set('id', $documentId);
                 }
 
                 $documents[$documentId]->set(
