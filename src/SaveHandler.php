@@ -88,6 +88,11 @@ class SaveHandler implements SaveHandlerInterface
                 'node_path NOT IN (?)' => $paths
             ]
         );
+
+        if (empty($documentRows)) {
+            return;
+        }
+
         $connection->insertOnDuplicate(
             $this->getTableName($dimensions),
             $documentRows,
