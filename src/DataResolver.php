@@ -57,6 +57,14 @@ class DataResolver implements DataResolverInterface
 
             foreach ($documentIds as $documentId) {
                 $documents[$documentId] = null;
+
+                if (null !== $nodePaths) {
+                    $documents[$documentId] = $this->documentDataFactory->create();
+
+                    foreach ($nodePaths as $nodePath) {
+                        $documents[$documentId]->set($nodePath, null);
+                    }
+                }
             }
 
             $query = $connection->query($select);
@@ -66,7 +74,6 @@ class DataResolver implements DataResolverInterface
 
                 if (!isset($documents[$documentId])) {
                     $documents[$documentId] = $this->documentDataFactory->create();
-                    $documents[$documentId]->set('id', $documentId);
                 }
 
                 $documents[$documentId]->set(
