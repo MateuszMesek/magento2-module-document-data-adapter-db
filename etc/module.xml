@@ -5,6 +5,7 @@
             <module name="MateuszMesek_DocumentDataApi"/>
             <module name="MateuszMesek_DocumentDataIndex"/>
             <module name="MateuszMesek_DocumentDataIndexIndexerApi"/>
+            <module name="MateuszMesek_DocumentDataIndexMview"/>
         </sequence>
     </module>
 </config>

@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataAdapterDB\Setup;
+namespace MateuszMesek\DocumentDataAdapterDB\Observer\CreateIndexTables;
 
-use Magento\Framework\Setup\InstallSchemaInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use MateuszMesek\DocumentDataAdapterDB\Command\CreateIndexTables;
 
-class Recurring implements InstallSchemaInterface
+class OnStoreAdd implements ObserverInterface
 {
     private CreateIndexTables $createIndexTables;
 
@@ -18,7 +17,7 @@ class Recurring implements InstallSchemaInterface
         $this->createIndexTables = $createIndexTables;
     }
 
-    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context): void
+    public function execute(Observer $observer)
     {
         $this->createIndexTables->execute();
     }
