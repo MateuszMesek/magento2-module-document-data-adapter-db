@@ -1,38 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataAdapterDB\SubscriptionProvider;
+namespace MateuszMesek\DocumentDataAdapterDB\Model\SubscriptionProvider;
 
 use InvalidArgumentException;
 use Magento\Framework\DB\Ddl\Trigger;
 use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
-use MateuszMesek\DocumentDataIndexIndexer\Dimension\Factory as DimensionFactory;
-use MateuszMesek\DocumentDataIndexIndexer\DimensionProvider\WithDocumentNameProvider;
-use MateuszMesek\DocumentDataIndexIndexer\DimensionProviderFactory;
-use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
-use MateuszMesek\DocumentDataIndexMview\Data\SubscriptionFactory;
+use MateuszMesek\DocumentDataIndexIndexer\Model\Dimension\Factory as DimensionFactory;
+use MateuszMesek\DocumentDataIndexIndexer\Model\DimensionProvider\WithDocumentNameProvider;
+use MateuszMesek\DocumentDataIndexIndexer\Model\DimensionProviderFactory;
+use MateuszMesek\DocumentDataIndexIndexerApi\Model\IndexNameResolverInterface;
+use MateuszMesek\DocumentDataIndexMview\Model\Data\SubscriptionFactory;
 use Traversable;
 
 class Generator
 {
-    private DimensionProviderFactory $dimensionProviderFactory;
-    private DimensionFactory $dimensionFactory;
-    private IndexNameResolverInterface $indexNameResolver;
-    private Resource $resource;
-    private SubscriptionFactory $subscriptionFactory;
-
     public function __construct(
-        DimensionProviderFactory   $dimensionProviderFactory,
-        DimensionFactory           $dimensionFactory,
-        IndexNameResolverInterface $indexNameResolver,
-        Resource                   $resource,
-        SubscriptionFactory        $subscriptionFactory
+        private readonly DimensionProviderFactory   $dimensionProviderFactory,
+        private readonly DimensionFactory           $dimensionFactory,
+        private readonly IndexNameResolverInterface $indexNameResolver,
+        private readonly Resource                   $resource,
+        private readonly SubscriptionFactory        $subscriptionFactory
     )
     {
-        $this->dimensionProviderFactory = $dimensionProviderFactory;
-        $this->dimensionFactory = $dimensionFactory;
-        $this->indexNameResolver = $indexNameResolver;
-        $this->resource = $resource;
-        $this->subscriptionFactory = $subscriptionFactory;
     }
 
     public function generate(string $documentName): Traversable

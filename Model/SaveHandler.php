@@ -1,42 +1,29 @@
 <?php declare(strict_types=1);
 
-namespace MateuszMesek\DocumentDataAdapterDB;
+namespace MateuszMesek\DocumentDataAdapterDB\Model;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use MateuszMesek\DocumentDataApi\Command\GetDocumentNodesInterface;
-use MateuszMesek\DocumentDataIndexIndexerApi\DimensionResolverInterface;
-use MateuszMesek\DocumentDataIndexIndexerApi\IndexNameResolverInterface;
-use MateuszMesek\DocumentDataIndexIndexerApi\SaveHandlerInterface;
+use MateuszMesek\DocumentDataApi\Model\Command\GetDocumentNodesInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\Model\DimensionResolverInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\Model\IndexNameResolverInterface;
+use MateuszMesek\DocumentDataIndexIndexerApi\Model\SaveHandlerInterface;
 use MateuszMesek\DocumentDataAdapterDB\Model\ResourceModel\Index as Resource;
 use Traversable;
 
 class SaveHandler implements SaveHandlerInterface
 {
-    private IndexNameResolverInterface $indexNameResolver;
-    private DimensionResolverInterface $documentNameResolver;
-    private DimensionResolverInterface $nodePathsResolver;
-    private GetDocumentNodesInterface $getDocumentNodes;
-    private Resource $resource;
-    private SerializerInterface $serializer;
-
     public function __construct(
-        IndexNameResolverInterface $indexNameResolver,
-        DimensionResolverInterface $documentNameResolver,
-        DimensionResolverInterface $nodePathsResolver,
-        GetDocumentNodesInterface  $getDocumentNodes,
-        Resource                   $resource,
-        SerializerInterface        $serializer
+        private readonly IndexNameResolverInterface $indexNameResolver,
+        private readonly DimensionResolverInterface $documentNameResolver,
+        private readonly DimensionResolverInterface $nodePathsResolver,
+        private readonly GetDocumentNodesInterface  $getDocumentNodes,
+        private readonly Resource                   $resource,
+        private readonly SerializerInterface        $serializer
     )
     {
-        $this->indexNameResolver = $indexNameResolver;
-        $this->documentNameResolver = $documentNameResolver;
-        $this->nodePathsResolver = $nodePathsResolver;
-        $this->getDocumentNodes = $getDocumentNodes;
-        $this->resource = $resource;
-        $this->serializer = $serializer;
     }
 
-    public function isAvailable($dimensions = []): bool
+    public function isAvailable(array $dimensions): bool
     {
         return $this->resource->getConnection()->isTableExists(
             $this->getTableName($dimensions)
@@ -53,14 +40,14 @@ class SaveHandler implements SaveHandlerInterface
         $paths = [];
 
         foreach ($documentNodes as $documentNode) {
-            $paths[] = $documentNode['path'];
+            $paths[] = $documentNode->getPath();
         }
 
         $documentIds = [];
         $documentRows = [];
 
         foreach ($documents as $documentId => $document) {
-            /** @var \MateuszMesek\DocumentDataApi\Data\DocumentDataInterface $document */
+            /** @var \MateuszMesek\DocumentDataApi\Model\Data\DocumentDataInterface $document */
             $documentId = (string)$documentId;
 
             $documentIds[] = $documentId;
@@ -119,8 +106,10 @@ class SaveHandler implements SaveHandlerInterface
 
     private function getTableName(array $dimensions): string
     {
+        $indexName = $this->indexNameResolver->resolve($dimensions);
+
         return $this->resource->getTable(
-            $this->indexNameResolver->resolve($dimensions)
+            $indexName
         );
     }
 }

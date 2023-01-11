@@ -9,17 +9,8 @@ class Index extends AbstractDb
     protected function _construct()
     {
         $this->_init(
-            'index_pattern',
+            'document_data_index_pattern',
             'id'
         );
-    }
-
-    /**
-     * @param string $tableName
-     * @return string
-     */
-    public function getTable($tableName): string
-    {
-        return parent::getTable("document_data_$tableName");
     }
 }

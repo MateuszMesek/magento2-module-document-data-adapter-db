@@ -3,7 +3,7 @@
     <table name="document_data_index_pattern" engine="innodb" comment="Document Data Index Pattern">
         <column xsi:type="bigint" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
         <column xsi:type="varchar" name="document_id" length="255" nullable="false" comment="Document ID"/>
-        <column xsi:type="varchar" name="node_path" length="255"  nullable="false" comment="Node Path"/>
+        <column xsi:type="varchar" name="node_path" length="255" nullable="false" comment="Node Path"/>
         <column xsi:type="json" name="node_value" nullable="false" comment="Node Value"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>

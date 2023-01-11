@@ -1,15 +1,37 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="MateuszMesek\DocumentDataAdapterDB\DataResolver">
+    <virtualType name="MateuszMesek\DocumentDataAdapterDB\Model\IndexNameResolver" type="MateuszMesek\DocumentDataIndexIndexer\Model\IndexNameResolver\ConfigPattern">
         <arguments>
-            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\DocumentNameResolver</argument>
-            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\NodePathsResolver</argument>
+            <argument name="config" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\Config</argument>
+        </arguments>
+    </virtualType>
+    <type name="MateuszMesek\DocumentDataAdapterDB\Model\DataResolver">
+        <arguments>
+            <argument name="readHandler" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\ReadHandler</argument>
         </arguments>
     </type>
-    <type name="MateuszMesek\DocumentDataAdapterDB\SaveHandler">
+    <type name="MateuszMesek\DocumentDataAdapterDB\Model\IdsResolver">
         <arguments>
-            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\DocumentNameResolver</argument>
-            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\DimensionResolver\NodePathsResolver</argument>
+            <argument name="readHandler" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\ReadHandler</argument>
+        </arguments>
+    </type>
+    <type name="MateuszMesek\DocumentDataAdapterDB\Model\IndexStructureBuilder">
+        <arguments>
+            <argument name="indexNameResolver" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\IndexNameResolver</argument>
+        </arguments>
+    </type>
+    <type name="MateuszMesek\DocumentDataAdapterDB\Model\ReadHandler">
+        <arguments>
+            <argument name="indexNameResolver" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\IndexNameResolver</argument>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\NodePathsResolver</argument>
+        </arguments>
+    </type>
+    <type name="MateuszMesek\DocumentDataAdapterDB\Model\SaveHandler">
+        <arguments>
+            <argument name="indexNameResolver" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\IndexNameResolver</argument>
+            <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\DocumentNameResolver</argument>
+            <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\NodePathsResolver</argument>
         </arguments>
     </type>
 </config>
