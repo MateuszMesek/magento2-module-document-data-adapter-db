@@ -4,6 +4,7 @@ namespace MateuszMesek\DocumentDataAdapterDB\Model;
 
 use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\DB\Query\Generator as QueryGenerator;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Serialize\SerializerInterface;
 use MateuszMesek\DocumentData\Model\Data\DocumentDataFactory;
@@ -23,8 +24,10 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
     public function __construct(
         Resource                             $resource,
         IndexNameResolverInterface           $indexNameResolver,
+        private readonly QueryGenerator      $queryGenerator,
         private readonly DocumentDataFactory $documentDataFactory,
         private readonly SerializerInterface $serializer,
+        private readonly int                 $batchSize = 100
     )
     {
         parent::__construct(
@@ -46,24 +49,45 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
             $this->addSortToSelect($searchCriteria, $select);
         }
 
-        $documents = [];
+        $idsSelect = (clone $select)
+            ->reset(Select::COLUMNS)
+            ->distinct(true)
+            ->columns(['id']);
 
-        $query = $connection->query($select);
+        $idsBatches = $this->queryGenerator->generate(
+            'id',
+            $idsSelect,
+            $this->batchSize
+        );
 
-        while ($row = $query->fetch()) {
-            ['document_id' => $documentId, 'node_path' => $nodePath, 'node_value' => $nodeValue] = $row;
+        foreach ($idsBatches as $idsBatch) {
+            $ids = array_map(
+                'intval',
+                $connection->fetchCol($idsBatch)
+            );
 
-            if (!isset($documents[$documentId])) {
-                $documents[$documentId] = $this->documentDataFactory->create();
+            $dataSelect = (clone $select)
+                ->where('id IN (?)', $ids);
+
+            $dataQuery = $connection->query($dataSelect);
+
+            $documents = [];
+
+            while ($row = $dataQuery->fetch()) {
+                ['document_id' => $documentId, 'node_path' => $nodePath, 'node_value' => $nodeValue] = $row;
+
+                if (!isset($documents[$documentId])) {
+                    $documents[$documentId] = $this->documentDataFactory->create();
+                }
+
+                $documents[$documentId]->set(
+                    $nodePath,
+                    $this->serializer->unserialize($nodeValue)
+                );
             }
 
-            $documents[$documentId]->set(
-                $nodePath,
-                $this->serializer->unserialize($nodeValue)
-            );
+            yield from $documents;
         }
-
-        yield from $documents;
     }
 
     private function addFilterToSelect(SearchCriteriaInterface $searchCriteria, Select $select): void
@@ -83,8 +107,6 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
 
         while ($filter = array_shift($filters)) {
             if (!in_array($filter->getField(), self::FILTER_FIELDS, true)) {
-
-
                 continue;
             }
 
