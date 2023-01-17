@@ -15,10 +15,13 @@ use Traversable;
 
 class ReadHandler extends AbstractHandler implements ReadHandlerInterface
 {
+    private const FIELD_DOCUMENT_ID = 'document_id';
+    private const FIELD_NODE_PATH = 'node_path';
+    private const FIELD_NODE_VALUE = 'node_value';
     private const FILTER_FIELDS = [
-        'document_id',
-        'node_path',
-        'node_value'
+        self::FIELD_DOCUMENT_ID,
+        self::FIELD_NODE_PATH,
+        self::FIELD_NODE_VALUE
     ];
 
     public function __construct(
@@ -49,25 +52,25 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
             $this->addSortToSelect($searchCriteria, $select);
         }
 
-        $idsSelect = (clone $select)
+        $documentIdsSelect = (clone $select)
             ->reset(Select::COLUMNS)
             ->distinct(true)
-            ->columns(['id']);
+            ->columns([self::FIELD_DOCUMENT_ID]);
 
-        $idsBatches = $this->queryGenerator->generate(
-            'id',
-            $idsSelect,
+        $documentIdsBatches = $this->queryGenerator->generate(
+            self::FIELD_DOCUMENT_ID,
+            $documentIdsSelect,
             $this->batchSize
         );
 
-        foreach ($idsBatches as $idsBatch) {
-            $ids = array_map(
-                'intval',
-                $connection->fetchCol($idsBatch)
-            );
+        foreach ($documentIdsBatches as $documentIdsBatch) {
+            $ids = $connection->fetchCol($documentIdsBatch);
 
             $dataSelect = (clone $select)
-                ->where('id IN (?)', $ids);
+                ->where($connection->prepareSqlCondition(
+                    self::FIELD_DOCUMENT_ID,
+                    ['in' => $ids]
+                ));
 
             $dataQuery = $connection->query($dataSelect);
 
