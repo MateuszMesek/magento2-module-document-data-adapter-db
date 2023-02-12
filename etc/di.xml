@@ -32,6 +32,7 @@
             <argument name="indexNameResolver" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\IndexNameResolver</argument>
             <argument name="documentNameResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\DocumentNameResolver</argument>
             <argument name="nodePathsResolver" xsi:type="object">MateuszMesek\DocumentDataIndexIndexer\Model\DimensionResolver\NodePathsResolver</argument>
+            <argument name="serializer" xsi:type="object">MateuszMesek\DocumentDataAdapterDB\Model\Serializer</argument>
         </arguments>
     </type>
 </config>
