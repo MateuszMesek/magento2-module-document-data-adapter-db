@@ -15,13 +15,10 @@ use Traversable;
 
 class ReadHandler extends AbstractHandler implements ReadHandlerInterface
 {
-    private const FIELD_DOCUMENT_ID = 'document_id';
-    private const FIELD_NODE_PATH = 'node_path';
-    private const FIELD_NODE_VALUE = 'node_value';
     private const FILTER_FIELDS = [
-        self::FIELD_DOCUMENT_ID,
-        self::FIELD_NODE_PATH,
-        self::FIELD_NODE_VALUE
+        Resource::FIELD_DOCUMENT_ID,
+        Resource::FIELD_NODE_PATH,
+        Resource::FIELD_NODE_VALUE
     ];
 
     public function __construct(
@@ -44,7 +41,7 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
         $connection = $this->resource->getConnection();
 
         $select = ($connection->select())
-            ->from($this->getTableName($dimensions));
+            ->from($this->getTableName($dimensions), []);
 
         if (null !== $searchCriteria) {
             $this->addFilterToSelect($searchCriteria, $select);
@@ -53,12 +50,11 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
         }
 
         $documentIdsSelect = (clone $select)
-            ->reset(Select::COLUMNS)
             ->distinct(true)
-            ->columns([self::FIELD_DOCUMENT_ID]);
+            ->columns([Resource::FIELD_DOCUMENT_ID]);
 
         $documentIdsBatches = $this->queryGenerator->generate(
-            self::FIELD_DOCUMENT_ID,
+            Resource::FIELD_DOCUMENT_ID,
             $documentIdsSelect,
             $this->batchSize
         );
@@ -67,8 +63,9 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
             $ids = $connection->fetchCol($documentIdsBatch);
 
             $dataSelect = (clone $select)
+                ->columns([Resource::FIELD_DOCUMENT_ID, Resource::FIELD_NODE_PATH, Resource::FIELD_NODE_VALUE])
                 ->where($connection->prepareSqlCondition(
-                    self::FIELD_DOCUMENT_ID,
+                    Resource::FIELD_DOCUMENT_ID,
                     ['in' => $ids]
                 ));
 
@@ -77,7 +74,7 @@ class ReadHandler extends AbstractHandler implements ReadHandlerInterface
             $documents = [];
 
             while ($row = $dataQuery->fetch()) {
-                ['document_id' => $documentId, 'node_path' => $nodePath, 'node_value' => $nodeValue] = $row;
+                [Resource::FIELD_DOCUMENT_ID => $documentId, Resource::FIELD_NODE_PATH => $nodePath, Resource::FIELD_NODE_VALUE => $nodeValue] = $row;
 
                 if (!isset($documents[$documentId])) {
                     $documents[$documentId] = $this->documentDataFactory->create();
