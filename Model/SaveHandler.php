@@ -45,6 +45,7 @@ class SaveHandler implements SaveHandlerInterface
 
         $documentIds = [];
         $documentRows = [];
+        $nullPathsByDocumentId = [];
 
         foreach ($documents as $documentId => $document) {
             /** @var \MateuszMesek\DocumentDataApi\Model\Data\DocumentDataInterface $document */
@@ -57,12 +58,18 @@ class SaveHandler implements SaveHandlerInterface
                     continue;
                 }
 
+                $value = $document->get($path);
+
+                // null values are not stored, a missing node reads as null
+                if (null === $value) {
+                    $nullPathsByDocumentId[$documentId][] = $path;
+                    continue;
+                }
+
                 $documentRows[] = [
                     'document_id' => $documentId,
                     'node_path' => $path,
-                    'node_value' => $this->serializer->serialize(
-                        $document->get($path)
-                    )
+                    'node_value' => $this->serializer->serialize($value)
                 ];
             }
         }
@@ -75,6 +82,18 @@ class SaveHandler implements SaveHandlerInterface
                 'node_path NOT IN (?)' => $paths
             ]
         );
+
+        // a value changed to null: remove the stored value
+        foreach ($nullPathsByDocumentId as $documentId => $nullPaths) {
+            $connection->delete(
+                $this->getTableName($dimensions),
+                [
+                    // array keys of numeric strings are int: a string keeps the index on document_id (varchar) usable
+                    'document_id = ?' => (string)$documentId,
+                    'node_path IN (?)' => $nullPaths
+                ]
+            );
+        }
 
         if (empty($documentRows)) {
             return;
